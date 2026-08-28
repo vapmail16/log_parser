@@ -1,0 +1,46 @@
+<section class="page">
+  <p class="eyebrow">Excel sheet</p>
+  <h1 data-testid="sheet-title">{{ category }} trades</h1>
+  <p>Same columns as the parser workbook. Click a Trade ID for the event timeline.</p>
+  <p *ngIf="error" class="error" data-testid="sheet-error">{{ error }}</p>
+  <div class="table-wrap">
+    <table data-testid="sheet-table">
+      <thead>
+        <tr>
+          <th *ngIf="category === 'SLT'">Workflow</th>
+          <th *ngIf="category === 'SLT'">Request Type</th>
+          <th>Trade ID</th>
+          <th>Deal ID</th>
+          <th>Status</th>
+          <th>Processing Start</th>
+          <th>Response Time</th>
+          <th>Duration Seconds</th>
+          <th>Request Count</th>
+          <th>Response Count</th>
+          <th>Request Source Files</th>
+          <th>Response Source Files</th>
+          <th>Outcome</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of items" [class]="rowClass(item)">
+          <td *ngIf="category === 'SLT'">{{ item.workflow }}</td>
+          <td *ngIf="category === 'SLT'">{{ item.requestType }}</td>
+          <td>
+            <a [routerLink]="['/events', item.id]" [attr.data-testid]="'event-' + item.displayId">{{ item.displayId }}</a>
+          </td>
+          <td>{{ item.groupId }}</td>
+          <td>{{ item.status }}</td>
+          <td>{{ item.start || '—' }}</td>
+          <td>{{ item.end || '—' }}</td>
+          <td>{{ item.durationSeconds ?? '—' }}</td>
+          <td>{{ item.requestCount }}</td>
+          <td>{{ item.responseCount }}</td>
+          <td>{{ fileLabel(item.requestFiles) }}</td>
+          <td>{{ fileLabel(item.responseFiles) }}</td>
+          <td>{{ item.outcome || '—' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>

@@ -1,0 +1,7 @@
+.shell { min-height: 100vh; }
+.top { display: flex; justify-content: space-between; align-items: center; padding: 0.9rem 1.4rem; background: #102033; color: white; }
+.brand { color: white; font-weight: 700; text-decoration: none; }
+nav { display: flex; gap: 1rem; }
+nav a { color: #d7e6f5; text-decoration: none; }
+nav a.active { color: white; font-weight: 700; border-bottom: 2px solid #7dd3c0; }
+main { padding: 1.4rem; max-width: 1100px; margin: 0 auto; }

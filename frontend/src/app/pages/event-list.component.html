@@ -1,0 +1,21 @@
+<section class="page">
+  <a routerLink="/">← Overview</a>
+  <h1>Events</h1>
+  <p *ngIf="error" class="error">{{ error }}</p>
+  <table data-testid="event-table">
+    <thead>
+      <tr>
+        <th>Id</th><th>Deal</th><th>Type</th><th>Status</th><th>Duration</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of items">
+        <td><a [routerLink]="['/events', item.id]" [attr.data-testid]="'event-' + item.displayId">{{ item.displayId }}</a></td>
+        <td>{{ item.groupId }}</td>
+        <td>{{ item.requestType }}</td>
+        <td>{{ item.status }}</td>
+        <td>{{ item.durationSeconds ?? '—' }}</td>
+      </tr>
+    </tbody>
+  </table>
+</section>

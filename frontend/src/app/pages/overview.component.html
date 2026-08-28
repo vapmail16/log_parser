@@ -1,0 +1,214 @@
+<section class="page">
+  <header class="hero">
+    <div>
+      <p class="eyebrow">Ops console</p>
+      <h1>Trade log analysis</h1>
+      <p class="lede">Point at a log folder. We run the parser script, then show the same KPIs and charts as the performance workbook.</p>
+    </div>
+  </header>
+
+  <div class="panel">
+    <label>
+      Domain
+      <select data-testid="domain" [(ngModel)]="domain">
+        <option *ngFor="let item of domains" [value]="item.id">{{ item.label }} ({{ item.status }})</option>
+      </select>
+    </label>
+    <label class="grow">
+      Log folder
+      <input
+        data-testid="source-path"
+        [(ngModel)]="sourcePath"
+        [placeholder]="samplePath || 'Full path to a folder of .log / .log.gz files'"
+      />
+    </label>
+    <button data-testid="analyze" type="button" (click)="analyze()" [disabled]="loading">Run parser</button>
+    <button data-testid="sample" type="button" class="secondary" (click)="useSample()" [disabled]="loading">
+      Run sample logs
+    </button>
+  </div>
+
+  <p class="hint">
+    Drop <code>trade_analysis_v2.py</code> into <code>backend/scripts</code> and Run parser uses it.
+    <span data-testid="parser-script">
+      Using {{ usingLocalParser ? 'local' : 'demo' }} script
+      <code *ngIf="parserScript">{{ parserScript }}</code>
+    </span>
+    <span *ngIf="samplePath">Sample logs: <code data-testid="sample-path">{{ samplePath }}</code></span>
+  </p>
+  <p *ngIf="error" class="error" data-testid="error">{{ error }}</p>
+  <p *ngIf="loading" data-testid="loading">Analyzing…</p>
+
+  <ng-container *ngIf="run && metrics">
+    <p class="meta" data-testid="run-meta">{{ run.eventCount }} events from {{ run.sourcePath }}</p>
+    <div class="tabs">
+      <button type="button" data-testid="tab-agency" [class.active]="category === 'Agency'" (click)="setCategory('Agency')">
+        Agency
+      </button>
+      <button type="button" data-testid="tab-slt" [class.active]="category === 'SLT'" (click)="setCategory('SLT')">SLT</button>
+    </div>
+
+    <section class="banner">
+      <h2>{{ category }} Performance Analysis</h2>
+      <div class="kpis" data-testid="kpis">
+        <article>
+          <span>Total requests</span>
+          <strong>{{ metrics.kpis.totalRequests }}</strong>
+        </article>
+        <article>
+          <span>Completed responses</span>
+          <strong>{{ metrics.kpis.completedResponses }}</strong>
+        </article>
+        <article>
+          <span>Average duration</span>
+          <strong>{{ metrics.kpis.avgDurationSeconds }} sec</strong>
+        </article>
+        <article>
+          <span>Match rate</span>
+          <strong>{{ metrics.kpis.matchRate === null ? '—' : metrics.kpis.matchRate + '%' }}</strong>
+        </article>
+        <article>
+          <span>Unmatched</span>
+          <strong data-testid="unmatched-count">{{ metrics.kpis.unmatchedCount }}</strong>
+        </article>
+      </div>
+      <p class="narrative" data-testid="narrative">{{ narrative() }}</p>
+    </section>
+
+    <section *ngIf="metrics.issues.length" class="issues" data-testid="issues">
+      <h2>Issues to inspect</h2>
+      <button type="button" *ngFor="let issue of metrics.issues" (click)="openIssue(issue.eventId)">
+        {{ issue.kind }} · {{ issue.displayId }} — {{ issue.summary }}
+      </button>
+    </section>
+
+    <div class="chart-grid">
+      <app-excel-chart
+        testId="chart-throughput"
+        chartType="line"
+        title="Started vs Completed Throughput"
+        yLabel="Trades per hour"
+        [xLabels]="hourLabels()"
+        [series]="throughputSeries()"
+      />
+      <app-excel-chart
+        testId="chart-duration"
+        chartType="column"
+        title="Average Completion Duration"
+        yLabel="Seconds"
+        [xLabels]="hourLabels()"
+        [series]="durationSeries()"
+      />
+      <app-excel-chart
+        testId="chart-match"
+        chartType="line"
+        title="Hourly Match Rate"
+        yLabel="Match rate %"
+        [xLabels]="hourLabels()"
+        [series]="matchSeries()"
+      />
+      <app-excel-chart
+        testId="chart-status"
+        chartType="bar"
+        title="Status Breakdown"
+        yLabel="Trades"
+        [xLabels]="statusLabels()"
+        [series]="statusSeries()"
+      />
+    </div>
+
+    <div class="analysis">
+      <section>
+        <h2>Hourly throughput analysis</h2>
+        <div class="table-scroll">
+        <table data-testid="hourly">
+          <thead>
+            <tr>
+              <th>Hour</th>
+              <th>Started</th>
+              <th>Completed</th>
+              <th>Avg Duration (sec)</th>
+              <th>Matched Completed</th>
+              <th>Match Rate</th>
+              <th>Completion Gap</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of hours()" [class.clickable]="row.started > 0" (click)="openHour(row)">
+              <td>{{ row.hour }}</td>
+              <td>{{ row.started }}</td>
+              <td>{{ row.completed }}</td>
+              <td>{{ row.avgDurationSeconds ?? '—' }}</td>
+              <td>{{ row.completed }}</td>
+              <td>{{ row.matchRate === null ? '—' : row.matchRate + '%' }}</td>
+              <td>{{ row.completionGap }}</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+      </section>
+      <aside>
+        <section>
+          <h2>Status breakdown</h2>
+          <table data-testid="status-table">
+            <tr *ngFor="let row of statusRows()"><th>{{ row.label }}</th><td>{{ row.count }}</td></tr>
+          </table>
+        </section>
+        <section *ngIf="peak()">
+          <h2>Peak hour comparison</h2>
+          <table data-testid="peak-table">
+            <tr><th>Peak Started</th><td>{{ peak()?.peakStarted }}</td></tr>
+            <tr><th>Peak Completed</th><td>{{ peak()?.peakCompleted }}</td></tr>
+            <tr><th>Started Peak Hour</th><td>{{ peak()?.startedHour }}</td></tr>
+            <tr><th>Completed Peak Hour</th><td>{{ peak()?.completedHour }}</td></tr>
+          </table>
+        </section>
+      </aside>
+    </div>
+
+    <div class="split" *ngIf="metrics.requestTypes.length">
+      <section>
+        <h2>Request type breakdown</h2>
+        <ul data-testid="request-types">
+          <li *ngFor="let row of metrics.requestTypes">{{ row.requestType }} — {{ row.count }} ({{ row.percent }}%)</li>
+        </ul>
+      </section>
+      <app-excel-chart
+        testId="chart-request-types"
+        chartType="bar"
+        title="Request Type Share of Overall Requests"
+        yLabel="% of requests"
+        [xLabels]="requestTypeLabels()"
+        [series]="requestTypeSeries()"
+      />
+    </div>
+
+    <div class="split">
+      <section>
+        <h2>Per-deal performance breakdown</h2>
+        <table data-testid="per-deal">
+          <thead>
+            <tr><th>Deal ID</th><th>Trade Count</th><th>Min Duration (sec)</th><th>Max Duration (sec)</th><th>Avg Duration (sec)</th></tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of metrics.perDeal" (click)="openDeal(row.groupId)">
+              <td>{{ row.groupId }}</td>
+              <td>{{ row.tradeCount }}</td>
+              <td>{{ row.minDurationSeconds ?? '—' }}</td>
+              <td>{{ row.maxDurationSeconds ?? '—' }}</td>
+              <td>{{ row.avgDurationSeconds ?? '—' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+      <app-excel-chart
+        testId="chart-peak"
+        chartType="bar"
+        title="Peak Hour Throughput"
+        yLabel="Trades per hour"
+        [xLabels]="peakLabels()"
+        [series]="peakSeries()"
+      />
+    </div>
+  </ng-container>
+</section>

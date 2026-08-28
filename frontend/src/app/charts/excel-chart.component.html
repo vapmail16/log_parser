@@ -1,0 +1,88 @@
+<figure class="excel-chart" [attr.data-testid]="testId">
+  <figcaption>{{ title }}</figcaption>
+  <svg [attr.viewBox]="'0 0 ' + width + ' ' + height" role="img" [attr.aria-label]="title">
+    <text class="axis-title" [attr.x]="14" [attr.y]="height / 2" [attr.transform]="axisTitleTransform()">
+      {{ yLabel }}
+    </text>
+    <line
+      class="axis"
+      [attr.x1]="padL()"
+      [attr.y1]="pad.t + plotHeight()"
+      [attr.x2]="padL() + plotWidth()"
+      [attr.y2]="pad.t + plotHeight()"
+    />
+    <line class="axis" [attr.x1]="padL()" [attr.y1]="pad.t" [attr.x2]="padL()" [attr.y2]="pad.t + plotHeight()" />
+    <g *ngFor="let tick of ticks()">
+      <line
+        class="grid"
+        [attr.x1]="padL()"
+        [attr.x2]="padL() + plotWidth()"
+        [attr.y1]="yAt(tick)"
+        [attr.y2]="yAt(tick)"
+      />
+      <text *ngIf="chartType !== 'bar'" class="tick" [attr.x]="padL() - 6" [attr.y]="yAt(tick) + 3">{{ formatTick(tick) }}</text>
+    </g>
+
+    <ng-container *ngIf="chartType === 'line'">
+      <g *ngFor="let row of series">
+        <path data-testid="series-line" [attr.d]="linePath(row.values)" fill="none" [attr.stroke]="row.color" />
+        <circle
+          *ngFor="let point of markers(row.values)"
+          data-testid="marker"
+          [attr.cx]="point.x"
+          [attr.cy]="point.y"
+          r="3.2"
+          [attr.fill]="row.color"
+        />
+      </g>
+      <text
+        *ngFor="let label of xLabels; let i = index"
+        class="tick x"
+        [attr.x]="xAt(i)"
+        [attr.y]="height - 12"
+      >
+        {{ showLabel(i) ? label : '' }}
+      </text>
+    </ng-container>
+
+    <ng-container *ngIf="chartType === 'column'">
+      <rect
+        *ngFor="let col of columns()"
+        data-testid="column"
+        [attr.x]="col.x"
+        [attr.y]="col.y"
+        [attr.width]="col.width"
+        [attr.height]="col.height"
+        [attr.fill]="series[0].color"
+      />
+      <text
+        *ngFor="let label of xLabels; let i = index"
+        class="tick x"
+        [attr.x]="xAt(i)"
+        [attr.y]="height - 12"
+      >
+        {{ showLabel(i) ? label : '' }}
+      </text>
+    </ng-container>
+
+    <ng-container *ngIf="chartType === 'bar'">
+      <g *ngFor="let bar of bars()">
+        <rect
+          data-testid="hbar"
+          [attr.x]="padL()"
+          [attr.y]="bar.y"
+          [attr.width]="bar.width"
+          [attr.height]="barHeight()"
+          [attr.fill]="series[0].color"
+        />
+        <text class="tick bar-label" [attr.x]="padL() - 6" [attr.y]="bar.y + barHeight() * 0.7">{{ bar.label }}</text>
+        <text class="tick bar-value" [attr.x]="padL() + bar.width + 6" [attr.y]="bar.y + barHeight() * 0.7">
+          {{ bar.value }}
+        </text>
+      </g>
+    </ng-container>
+  </svg>
+  <ul class="legend" *ngIf="chartType !== 'bar'">
+    <li *ngFor="let row of series"><i [style.background]="row.color"></i>{{ row.name }}</li>
+  </ul>
+</figure>

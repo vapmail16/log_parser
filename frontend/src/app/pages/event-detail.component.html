@@ -1,0 +1,25 @@
+<section class="page" *ngIf="event">
+  <a routerLink="/events">← Events</a>
+  <h1 data-testid="event-title">{{ event.requestType }} {{ event.displayId }}</h1>
+  <dl class="verdict" data-testid="verdict">
+    <div><dt>Deal</dt><dd>{{ event.groupId }}</dd></div>
+    <div><dt>Status</dt><dd>{{ event.status }}</dd></div>
+    <div><dt>Outcome</dt><dd>{{ event.outcome || '—' }}</dd></div>
+    <div><dt>Duration</dt><dd>{{ event.durationSeconds ?? '—' }}s</dd></div>
+    <div><dt>Requests</dt><dd>{{ event.requestCount }} / {{ event.responseCount }}</dd></div>
+  </dl>
+
+  <h2>Timeline</h2>
+  <ol class="hops" data-testid="hops">
+    <li *ngFor="let hop of hops; let i = index">
+      <button type="button" (click)="toggleHop(i)">
+        <span>{{ hop.timestamp }}</span>
+        <span>{{ hop.gapSeconds ? '+' + hop.gapSeconds + 's' : '' }}</span>
+        <strong>{{ hop.service }}</strong>
+        <em>{{ hop.summary }}</em>
+      </button>
+      <pre *ngIf="openHop === i && hop.payload" data-testid="hop-payload">{{ hop.payload }}</pre>
+    </li>
+  </ol>
+</section>
+<p *ngIf="error" class="error" data-testid="detail-error">{{ error }}</p>

@@ -1,0 +1,31 @@
+.page { display: grid; gap: 1.25rem; }
+.hero h1 { margin: 0.2rem 0; }
+.eyebrow { text-transform: uppercase; letter-spacing: 0.08em; color: #5b6b7a; font-size: 0.75rem; }
+.lede, .meta, .narrative { color: #445; }
+.panel { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: end; }
+label { display: grid; gap: 0.3rem; font-size: 0.85rem; }
+.grow { flex: 1; min-width: 16rem; }
+input, select, button { padding: 0.55rem 0.7rem; border-radius: 8px; border: 1px solid #c9d2dc; }
+button { background: #16324f; color: white; cursor: pointer; }
+button.secondary { background: white; color: #16324f; }
+.tabs button.active { background: #0f6e56; }
+.banner { background: white; border: 1px solid #d7dee6; padding: 1rem; }
+.banner h2 { margin: 0 0 0.8rem; color: #1f4e78; }
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); gap: 0.75rem; }
+.kpis article { background: #f3f7fb; border: 1px solid #d7dee6; border-radius: 8px; padding: 0.8rem; }
+.kpis span { display: block; color: #667; font-size: 0.8rem; }
+.kpis strong { font-size: 1.45rem; }
+.error { color: #9b1c1c; }
+.hint { color: #5b6b7a; font-size: 0.85rem; }
+.hint code { background: #e6ebf0; padding: 0.1rem 0.3rem; border-radius: 4px; }
+.analysis { display: grid; grid-template-columns: minmax(0, 1fr) 16rem; gap: 1rem; }
+@media (max-width: 900px) { .analysis { grid-template-columns: 1fr; } }
+.analysis aside { display: grid; gap: 1rem; align-content: start; }
+.table-scroll { max-height: 18rem; overflow: auto; border: 1px solid #d7dee6; }
+.chart-grid, .split { display: grid; grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr)); gap: 1rem; }
+table { width: 100%; border-collapse: collapse; background: white; }
+th, td { text-align: left; padding: 0.45rem 0.5rem; border-bottom: 1px solid #e6ebf0; font-size: 0.85rem; }
+thead th { background: #1f4e78; color: white; }
+tr.clickable { cursor: pointer; }
+tr.clickable:hover td { background: #eef6fb; }
+.issues button { display: block; width: 100%; text-align: left; margin-bottom: 0.4rem; background: #7a2e0e; }
