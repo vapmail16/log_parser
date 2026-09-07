@@ -1,9 +1,10 @@
 .page { display: grid; gap: 0.7rem; }
 .eyebrow { text-transform: uppercase; letter-spacing: 0.08em; color: #5b6b7a; font-size: 0.75rem; }
 .table-wrap { overflow: auto; background: white; border: 1px solid #d7dee6; }
-table { width: 100%; border-collapse: collapse; min-width: 60rem; }
-th { background: #1f4e78; color: white; padding: 0.5rem; text-align: left; }
+table { width: 100%; border-collapse: collapse; min-width: 70rem; }
+th { background: #1f4e78; color: white; padding: 0.5rem; text-align: left; white-space: nowrap; }
 td { padding: 0.45rem 0.5rem; border-bottom: 1px solid #e6ebf0; }
+td.files { max-width: 16rem; overflow-wrap: anywhere; }
 tr:nth-child(even) td { background: #f3f7fb; }
 tr.matched td { background: #c6efce; }
 tr.unmatched td { background: #fce4d6; }

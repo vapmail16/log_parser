@@ -76,5 +76,28 @@ describe('WorkbookComponent', () => {
     expect(component.rowClass(item)).toBe('matched');
     expect(component.fileLabel(['/tmp/ldtl-trading-2026-08-24.0.log'])).toBe('ldtl-trading-2026-08-24.0.log');
     expect(component.fileLabel([])).toBe('—');
+    expect(
+      component.fileLabel([
+        'C:\\Users\\example\\Desktop\\logs\\ldtl-trading-2026-08-24.0.log.gz',
+      ])
+    ).toBe('ldtl-trading-2026-08-24.0.log.gz');
+  });
+
+  it('renders only the log file name in source-file cells', async () => {
+    const windowsItem = {
+      ...item,
+      requestFiles: [
+        'C:\\Users\\example\\Desktop\\logs\\ldtl-trading-2026-08-24.2.log.gz',
+      ],
+      responseFiles: [
+        'C:\\Users\\example\\Desktop\\logs\\ldtl-trading-2026-08-24.2.log.gz',
+      ],
+    };
+    await setup('SLT', of({ items: [windowsItem], total: 1 }));
+    const table = fixture.nativeElement.querySelector('[data-testid="sheet-table"]').textContent;
+    expect(table).toContain('ldtl-trading-2026-08-24.2.log.gz');
+    expect(table).not.toContain('C:\\Users');
+    expect(table).toContain('786712011');
+    expect(table).toContain('SUCCESS');
   });
 });

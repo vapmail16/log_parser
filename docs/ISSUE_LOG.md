@@ -64,6 +64,12 @@ Engineering notes for this project. Append a row when something goes wrong.
 - **What went wrong:** `trade_analysis_v2.py` in `backend/scripts` was ignored unless an env var was set.
 - **Fix:** Resolve on each parse: env path, then `backend/scripts/trade_analysis_v2.py`, then the demo script.
 
+## Windows log paths crush the Agency/SLT sheet
+
+- **What went wrong:** `fileLabel` split only on `/`. Windows `C:\...\ldtl-trading-....log.gz` stayed one long cell, so Trade ID and other headers were squeezed off screen.
+- **Fix:** Split on `/` and `\`. Cap file-column width.
+- **Avoid:** Do not assume POSIX separators when showing parser source-file paths.
+
 ## Exchange hook goes after workflow, not at the request-message markers
 
 - **What went wrong:** The extract_exchange call needs `workflow` and `trade_id`. Those are set after `WORKFLOW_PATTERN`, not at the `REQUEST MESSAGE` / `RESPONSE MESSAGE` `continue` block.

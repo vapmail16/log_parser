@@ -36,8 +36,8 @@
           <td>{{ item.durationSeconds ?? '—' }}</td>
           <td>{{ item.requestCount }}</td>
           <td>{{ item.responseCount }}</td>
-          <td>{{ fileLabel(item.requestFiles) }}</td>
-          <td>{{ fileLabel(item.responseFiles) }}</td>
+          <td class="files">{{ fileLabel(item.requestFiles) }}</td>
+          <td class="files">{{ fileLabel(item.responseFiles) }}</td>
           <td>{{ item.outcome || '—' }}</td>
         </tr>
       </tbody>
