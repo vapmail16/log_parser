@@ -63,3 +63,9 @@ Engineering notes for this project. Append a row when something goes wrong.
 
 - **What went wrong:** `trade_analysis_v2.py` in `backend/scripts` was ignored unless an env var was set.
 - **Fix:** Resolve on each parse: env path, then `backend/scripts/trade_analysis_v2.py`, then the demo script.
+
+## Exchange hook goes after workflow, not at the request-message markers
+
+- **What went wrong:** The extract_exchange call needs `workflow` and `trade_id`. Those are set after `WORKFLOW_PATTERN`, not at the `REQUEST MESSAGE` / `RESPONSE MESSAGE` `continue` block.
+- **Fix:** Paste `extract_exchange_hook.py` after `workflow = workflow_match.group(1)` and the timestamp parse, still inside `for line in log_file:`.
+- **Avoid:** Do not paste the hook before the workflow match; those earlier branches `continue` and never reach it.
