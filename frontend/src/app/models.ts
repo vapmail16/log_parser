@@ -100,6 +100,15 @@ export interface Hop {
   payload: string | null;
   sourceFile: string;
   gapSeconds: number | null;
+  lines?: string[];
+}
+
+export interface TimelineResult {
+  eventId: string;
+  hops: Hop[];
+  requestPayload?: string | null;
+  responsePayload?: string | null;
+  outcome?: string | null;
 }
 
 export interface EventQuery {

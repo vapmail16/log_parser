@@ -9,6 +9,8 @@ test('sample data shows Agency metrics then drills into an event timeline', asyn
   await expect(page.getByTestId('unmatched-count')).toHaveText('1');
   await expect(page.getByTestId('issues')).toContainText('unmatched');
   await expect(page.getByTestId('hourly')).toContainText('05:00');
+  await page.getByTestId('hour-filter').selectOption('active');
+  await expect(page.getByTestId('hourly')).toContainText('05:00');
   await expect(page.getByTestId('chart-throughput')).toContainText('Started vs Completed Throughput');
   await expect(page.getByTestId('chart-throughput').locator('svg')).toBeVisible();
   await expect(page.getByTestId('chart-duration')).toContainText('Average Completion Duration');
@@ -63,4 +65,5 @@ test('SLT event timeline shows hops from the source log', async ({ page }) => {
   await expect(page.getByTestId('hops')).toContainText('EMTService');
   await page.getByRole('button', { name: /sendEMTMessage/i }).click();
   await expect(page.getByTestId('hop-payload')).toContainText('ALTER_TRADE');
+  await expect(page.getByTestId('event-request').or(page.getByTestId('hop-payload'))).toBeVisible();
 });

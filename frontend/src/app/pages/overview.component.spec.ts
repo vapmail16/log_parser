@@ -97,6 +97,17 @@ describe('OverviewComponent', () => {
     expect(fixture.nativeElement.querySelector('[data-testid="chart-match"]').textContent).toContain('Hourly Match Rate');
     expect(fixture.nativeElement.querySelector('[data-testid="chart-status"]').textContent).toContain('Status Breakdown');
     expect(fixture.nativeElement.querySelectorAll('[data-testid="series-line"]').length).toBeGreaterThan(0);
+    expect(fixture.nativeElement.querySelector('[data-testid="issues"]').textContent).toContain('unmatched (1)');
+    fixture.componentInstance.hourFilter = 'active';
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('[data-testid="hourly"]').textContent).toContain('05:00');
+    expect(fixture.nativeElement.querySelector('[data-testid="hourly"]').textContent).not.toContain('08:00');
+    fixture.componentInstance.hourFilter = 'gaps';
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('[data-testid="hourly"]').textContent).toContain('05:00');
+    fixture.componentInstance.toggleIssueKind('unmatched');
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('[data-testid="issues"]').textContent).not.toContain('2890940');
   });
 
   it('requires a folder path before analyze', () => {

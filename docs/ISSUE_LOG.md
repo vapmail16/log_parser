@@ -47,6 +47,18 @@ Engineering notes for this project. Append a row when something goes wrong.
 - **What went wrong:** The first timeline hop is often Kafka consume with no body.
 - **Fix:** Click the EMT request hop when asserting payload text.
 
+## Corporate npm may reject lockfile packages
+
+- **What went wrong:** `npm ci` failed with registry 404 or 403 on `p-map@7.0.7` (Angular CLI transitive dep).
+- **Fix:** Install from the default company registry, not npmjs. Override `p-map` to a version the registry has, or copy a complete `node_modules`.
+- **Avoid:** Do not use `npm ci --registry https://registry.npmjs.org` on a locked-down network.
+
+## Event hops can wrap onto the next log line
+
+- **What went wrong:** Timeline kept only the header line, so XML/JSON bodies that wrap were dropped.
+- **Fix:** Attach non-header lines to the previous hop until the next timestamped header.
+- **Avoid:** Do not require the trade id on every wrapped payload line.
+
 ## Local parser drop-in
 
 - **What went wrong:** `trade_analysis_v2.py` in `backend/scripts` was ignored unless an env var was set.

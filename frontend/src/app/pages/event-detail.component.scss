@@ -5,4 +5,7 @@ dd { margin: 0; font-weight: 600; }
 .hops { list-style: none; padding: 0; display: grid; gap: 0.4rem; }
 .hops button { width: 100%; text-align: left; display: grid; gap: 0.15rem; background: white; color: #16324f; }
 pre { background: #111827; color: #e5e7eb; padding: 0.75rem; overflow: auto; }
+.bodies { display: grid; gap: 0.75rem; }
+.bodies h2, .hop-body .more { margin: 0 0 0.4rem; }
+.more { width: auto; background: #eef6fb; color: #16324f; }
 .error { color: #9b1c1c; }

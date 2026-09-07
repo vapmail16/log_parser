@@ -26,6 +26,8 @@ export class OverviewComponent implements OnInit {
   samplePath = '';
   parserScript = '';
   usingLocalParser = false;
+  hourFilter: 'all' | 'active' | 'gaps' = 'all';
+  openIssueKinds = new Set<string>(['unmatched', 'fail', 'retry', 'slow']);
 
   constructor(
     private readonly api: ApiService,
@@ -90,6 +92,34 @@ export class OverviewComponent implements OnInit {
 
   hours(): HourlyRow[] {
     return this.metrics?.hourly ?? [];
+  }
+
+  tableHours(): HourlyRow[] {
+    const rows = this.hours();
+    if (this.hourFilter === 'active') {
+      return rows.filter((row) => row.started > 0);
+    }
+    if (this.hourFilter === 'gaps') {
+      return rows.filter((row) => row.completionGap < 0);
+    }
+    return rows;
+  }
+
+  issueGroups(): { kind: string; items: Metrics['issues'] }[] {
+    const issues = this.metrics?.issues ?? [];
+    return ['unmatched', 'fail', 'retry', 'slow']
+      .map((kind) => ({ kind, items: issues.filter((issue) => issue.kind === kind) }))
+      .filter((group) => group.items.length);
+  }
+
+  toggleIssueKind(kind: string): void {
+    const next = new Set(this.openIssueKinds);
+    if (next.has(kind)) {
+      next.delete(kind);
+    } else {
+      next.add(kind);
+    }
+    this.openIssueKinds = next;
   }
 
   hourLabels(): string[] {

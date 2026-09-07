@@ -38,6 +38,7 @@ const hop: Hop = {
   payload: '{"eventId":"ALTER_TRADE_786712011_1"}',
   sourceFile: 'a.log',
   gapSeconds: null,
+  lines: ['line1 {"eventId":"ALTER_TRADE_786712011_1"}'],
 };
 
 describe('EventDetailComponent', () => {
@@ -69,12 +70,25 @@ describe('EventDetailComponent', () => {
     await setup(event.id);
     expect(fixture.nativeElement.querySelector('[data-testid="event-title"]').textContent).toContain('786712011');
     expect(fixture.nativeElement.textContent).toContain('EMTService');
+    expect(fixture.nativeElement.querySelector('[data-testid="event-request"]').textContent).toContain('{}');
     fixture.nativeElement.querySelector('.hops button').click();
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('[data-testid="hop-payload"]').textContent).toContain('ALTER_TRADE');
     fixture.nativeElement.querySelector('.hops button').click();
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('[data-testid="hop-payload"]')).toBeNull();
+  });
+
+  it('previews ten hop lines then shows the rest', async () => {
+    const long: Hop = { ...hop, lines: Array.from({ length: 12 }, (_, i) => `L${i + 1}`) };
+    await setup(event.id, of(event), of({ eventId: event.id, hops: [long] }));
+    fixture.nativeElement.querySelector('.hops button').click();
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('[data-testid="hop-payload"]').textContent).toContain('L1');
+    expect(fixture.nativeElement.querySelector('[data-testid="hop-payload"]').textContent).not.toContain('L12');
+    fixture.nativeElement.querySelector('[data-testid="hop-more"]').click();
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('[data-testid="hop-payload"]').textContent).toContain('L12');
   });
 
   it('shows missing id and load errors', async () => {

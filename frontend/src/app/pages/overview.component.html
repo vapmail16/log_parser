@@ -77,9 +77,16 @@
 
     <section *ngIf="metrics.issues.length" class="issues" data-testid="issues">
       <h2>Issues to inspect</h2>
-      <button type="button" *ngFor="let issue of metrics.issues" (click)="openIssue(issue.eventId)">
-        {{ issue.kind }} · {{ issue.displayId }} — {{ issue.summary }}
-      </button>
+      <div *ngFor="let group of issueGroups()" class="issue-group">
+        <button type="button" class="issue-kind" (click)="toggleIssueKind(group.kind)">
+          {{ group.kind }} ({{ group.items.length }})
+        </button>
+        <ng-container *ngIf="openIssueKinds.has(group.kind)">
+          <button type="button" *ngFor="let issue of group.items" (click)="openIssue(issue.eventId)">
+            {{ issue.kind }} · {{ issue.displayId }} — {{ issue.summary }}
+          </button>
+        </ng-container>
+      </div>
     </section>
 
     <div class="chart-grid">
@@ -120,6 +127,14 @@
     <div class="analysis">
       <section>
         <h2>Hourly throughput analysis</h2>
+        <label class="hour-filter">
+          Show
+          <select data-testid="hour-filter" [(ngModel)]="hourFilter">
+            <option value="all">All 24 hours</option>
+            <option value="active">Hours with traffic</option>
+            <option value="gaps">Hours with a completion gap</option>
+          </select>
+        </label>
         <div class="table-scroll">
         <table data-testid="hourly">
           <thead>
@@ -134,7 +149,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let row of hours()" [class.clickable]="row.started > 0" (click)="openHour(row)">
+            <tr *ngFor="let row of tableHours()" [class.clickable]="row.started > 0" (click)="openHour(row)">
               <td>{{ row.hour }}</td>
               <td>{{ row.started }}</td>
               <td>{{ row.completed }}</td>

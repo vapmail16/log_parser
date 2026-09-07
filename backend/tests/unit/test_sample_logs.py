@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from app.core.sample_logs import SAMPLE_TRADES, file_for_trade, write_sample_logs
-from app.core.timeline import extract_timeline
+from app.core.timeline import extract_exchange, extract_timeline
 
 
 def test_sample_logs_match_expected_shape_and_extract(tmp_path: Path):
@@ -24,6 +24,10 @@ def test_sample_logs_match_expected_shape_and_extract(tmp_path: Path):
     assert "REQUEST MESSAGE" in text
     assert "<?xml" in text
     assert "Response sent to LCX" in text
+    request, response, outcome = extract_exchange(hops)
+    assert request and "800615001" in request
+    assert response and "Portfolio allocations have been updated." in response
+    assert outcome == "SUCCESS"
 
 
 def test_sample_logs_include_unmatched_fail_and_retry_trades(tmp_path: Path):

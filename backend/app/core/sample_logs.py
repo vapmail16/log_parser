@@ -105,6 +105,16 @@ def _agency_lines() -> list[str]:
             "consumed AgencyTradeRequest",
         ),
         _line(
+            "2026-08-24 05:02:33,820",
+            "AGENCY-1",
+            "2900117",
+            "AGY_TRADE",
+            "LDTLINFO",
+            "com.ldtl.trading.service.SecondaryLoanTradeProcessorService",
+            "Create trade request message received from LCX topic: request -> "
+            '{"settlementTradeId":"2900117","dealInternalId":"WNGH58WU"}',
+        ),
+        _line(
             "2026-08-24 05:02:40,100",
             "EMT-LDS-Thread1",
             "2900117",
@@ -282,7 +292,13 @@ def _afternoon_slt_lines() -> list[str]:
             "LDTLDEBUG",
             "com.ldtl.trading.service.EMTService",
             "sendEMTMessage() EMT Request Message: "
-            + _emt_json("ALTER_TRADE_786712011_1756040687982", "SL_ALTER_TRADE", "786712011", "HH0Y9V9"),
+            + _emt_json(
+                "ALTER_TRADE_786712011_1756040687982",
+                "SL_ALTER_TRADE",
+                "786712011",
+                "HH0Y9V9",
+                extra=',"payload":"{\\"messages\\":{\\"message\\":[\\"ok\\"]},\\"success\\":\\"true\\",\\"esettlementTradeId\\":\\"800615001\\"}"',
+            ),
         ),
         _line(
             "2026-08-24 13:04:47,990",
@@ -347,6 +363,18 @@ def _afternoon_slt_lines() -> list[str]:
             "LDTLINFO",
             "com.ldtl.trading.service.SecondaryLoanTradeProcessorService",
             "Response sent to LCX response topic for eSettlementTradeId: 786712011",
+        ),
+        _line(
+            "2026-08-24 13:06:04,560",
+            "SLT-4-C-1",
+            "786712011",
+            "SL_ALTER_TRADE",
+            "LDTLINFO",
+            "com.ldtl.trading.service.EMTService",
+            "Sending message "
+            '{"messages":{"message":["Portfolio allocations have been updated."]},'
+            '"success":"true","status":"CLSD","esettlementTradeId":"786712011",'
+            '"messageType":"SL_ALTER_TRADE"}',
         ),
     ]
     failed = [

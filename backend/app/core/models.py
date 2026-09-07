@@ -67,6 +67,7 @@ class Hop:
     payload: str | None
     source_file: str
     gap_seconds: float | None
+    lines: list[str] = field(default_factory=list)
 
     def to_public(self) -> dict[str, Any]:
         return {
@@ -79,6 +80,7 @@ class Hop:
             "payload": self.payload,
             "sourceFile": self.source_file,
             "gapSeconds": self.gap_seconds,
+            "lines": self.lines,
         }
 
 

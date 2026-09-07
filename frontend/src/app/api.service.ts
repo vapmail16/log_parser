@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { DomainInfo, EventItem, EventQuery, HealthInfo, Hop, Metrics, RunInfo } from './models';
+import { DomainInfo, EventItem, EventQuery, HealthInfo, Metrics, RunInfo, TimelineResult } from './models';
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
@@ -50,9 +50,7 @@ export class ApiService {
     return this.http.get<EventItem>(`/api/runs/latest/events/${encodeURIComponent(eventId)}`);
   }
 
-  timeline(eventId: string): Observable<{ eventId: string; hops: Hop[] }> {
-    return this.http.get<{ eventId: string; hops: Hop[] }>(
-      `/api/runs/latest/events/${encodeURIComponent(eventId)}/timeline`
-    );
+  timeline(eventId: string): Observable<TimelineResult> {
+    return this.http.get<TimelineResult>(`/api/runs/latest/events/${encodeURIComponent(eventId)}/timeline`);
   }
 }

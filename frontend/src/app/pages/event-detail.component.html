@@ -4,10 +4,21 @@
   <dl class="verdict" data-testid="verdict">
     <div><dt>Deal</dt><dd>{{ event.groupId }}</dd></div>
     <div><dt>Status</dt><dd>{{ event.status }}</dd></div>
-    <div><dt>Outcome</dt><dd>{{ event.outcome || '—' }}</dd></div>
+    <div><dt>Outcome</dt><dd>{{ outcomeText() }}</dd></div>
     <div><dt>Duration</dt><dd>{{ event.durationSeconds ?? '—' }}s</dd></div>
     <div><dt>Requests</dt><dd>{{ event.requestCount }} / {{ event.responseCount }}</dd></div>
   </dl>
+
+  <section class="bodies" *ngIf="requestText() || responseText()">
+    <article *ngIf="requestText()">
+      <h2>Request</h2>
+      <pre data-testid="event-request">{{ requestText() }}</pre>
+    </article>
+    <article *ngIf="responseText()">
+      <h2>Response</h2>
+      <pre data-testid="event-response">{{ responseText() }}</pre>
+    </article>
+  </section>
 
   <h2>Timeline</h2>
   <ol class="hops" data-testid="hops">
@@ -18,7 +29,18 @@
         <strong>{{ hop.service }}</strong>
         <em>{{ hop.summary }}</em>
       </button>
-      <pre *ngIf="openHop === i && hop.payload" data-testid="hop-payload">{{ hop.payload }}</pre>
+      <div *ngIf="openHop === i" class="hop-body">
+        <pre *ngIf="visibleLines(hop, i).length" data-testid="hop-payload">{{ visibleLines(hop, i).join('\n') }}</pre>
+        <button
+          *ngIf="hiddenCount(hop, i)"
+          type="button"
+          class="more"
+          data-testid="hop-more"
+          (click)="showAllLines(i)"
+        >
+          Show all {{ hopLines(hop).length }} lines
+        </button>
+      </div>
     </li>
   </ol>
 </section>

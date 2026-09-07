@@ -13,7 +13,7 @@ from app.core.errors import NotFoundError
 from app.core.file_store import JsonFileStore
 from app.core.models import Run
 from app.core.store import RunStore
-from app.core.timeline import extract_timeline
+from app.core.timeline import extract_exchange, extract_timeline
 from app.config import LOCAL_PARSER_NAME, resolve_trade_parser_script
 from app.core.validation import validate_source_path
 
@@ -150,6 +150,13 @@ def build_router() -> APIRouter:
             raise NotFoundError("Event not found")
         files = list(dict.fromkeys(event.request_files + event.response_files))
         hops = extract_timeline(event.display_id, files)
-        return {"eventId": event.id, "hops": [hop.to_public() for hop in hops]}
+        request, response, outcome = extract_exchange(hops)
+        return {
+            "eventId": event.id,
+            "hops": [hop.to_public() for hop in hops],
+            "requestPayload": event.request_payload or request,
+            "responsePayload": event.response_payload or response,
+            "outcome": event.outcome or outcome,
+        }
 
     return router

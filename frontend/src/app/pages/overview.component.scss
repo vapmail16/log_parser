@@ -29,3 +29,5 @@ thead th { background: #1f4e78; color: white; }
 tr.clickable { cursor: pointer; }
 tr.clickable:hover td { background: #eef6fb; }
 .issues button { display: block; width: 100%; text-align: left; margin-bottom: 0.4rem; background: #7a2e0e; }
+.issues .issue-kind { background: #5b2a12; }
+.hour-filter { display: flex; gap: 0.5rem; align-items: center; margin: 0 0 0.5rem; font-size: 0.85rem; }
