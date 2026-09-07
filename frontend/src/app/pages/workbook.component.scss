@@ -5,6 +5,8 @@ table { width: 100%; border-collapse: collapse; min-width: 70rem; }
 th { background: #1f4e78; color: white; padding: 0.5rem; text-align: left; white-space: nowrap; }
 td { padding: 0.45rem 0.5rem; border-bottom: 1px solid #e6ebf0; }
 td.files { max-width: 16rem; overflow-wrap: anywhere; }
+td.payload { max-width: 22rem; vertical-align: top; }
+td.payload pre { margin: 0; max-height: 8rem; overflow: auto; white-space: pre-wrap; word-break: break-word; font-size: 0.75rem; }
 tr:nth-child(even) td { background: #f3f7fb; }
 tr.matched td { background: #c6efce; }
 tr.unmatched td { background: #fce4d6; }

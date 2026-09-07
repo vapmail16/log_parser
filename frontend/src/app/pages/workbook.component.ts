@@ -49,4 +49,8 @@ export class WorkbookComponent implements OnInit {
   fileLabel(paths: string[]): string {
     return paths.map((path) => path.split(/[/\\]/).pop() || path).join(', ') || '—';
   }
+
+  payloadText(value: string | null | undefined): string {
+    return value?.trim() || '—';
+  }
 }

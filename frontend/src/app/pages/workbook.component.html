@@ -19,6 +19,8 @@
           <th>Response Count</th>
           <th>Request Source Files</th>
           <th>Response Source Files</th>
+          <th>Request Payload</th>
+          <th>Response Payload</th>
           <th>Outcome</th>
         </tr>
       </thead>
@@ -38,6 +40,8 @@
           <td>{{ item.responseCount }}</td>
           <td class="files">{{ fileLabel(item.requestFiles) }}</td>
           <td class="files">{{ fileLabel(item.responseFiles) }}</td>
+          <td class="payload"><pre>{{ payloadText(item.requestPayload) }}</pre></td>
+          <td class="payload"><pre>{{ payloadText(item.responsePayload) }}</pre></td>
           <td>{{ item.outcome || '—' }}</td>
         </tr>
       </tbody>

@@ -53,7 +53,26 @@ describe('WorkbookComponent', () => {
     expect(fixture.nativeElement.querySelector('[data-testid="sheet-title"]').textContent).toContain('SLT');
     expect(fixture.nativeElement.textContent).toContain('Workflow');
     expect(fixture.nativeElement.textContent).toContain('786712011');
+    expect(fixture.nativeElement.textContent).toContain('Request Payload');
+    expect(fixture.nativeElement.textContent).toContain('Response Payload');
+    expect(fixture.nativeElement.textContent).toContain('Outcome');
     expect(api.events).toHaveBeenCalledWith({ category: 'SLT' });
+  });
+
+  it('shows request response and outcome from the parser row', async () => {
+    const filled = {
+      ...item,
+      requestPayload: '{"settlementTradeId":"786712011"}',
+      responsePayload: '{"success":"true"}',
+      outcome: 'SUCCESS',
+    };
+    await setup('SLT', of({ items: [filled], total: 1 }));
+    const table = fixture.nativeElement.querySelector('[data-testid="sheet-table"]').textContent;
+    expect(table).toContain('settlementTradeId');
+    expect(table).toContain('"success":"true"');
+    expect(table).toContain('SUCCESS');
+    expect(fixture.componentInstance.payloadText(null)).toBe('—');
+    expect(fixture.componentInstance.payloadText('  ')).toBe('—');
   });
 
   it('renders Agency sheet without workflow column', async () => {

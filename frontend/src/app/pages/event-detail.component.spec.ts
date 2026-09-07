@@ -71,6 +71,8 @@ describe('EventDetailComponent', () => {
     expect(fixture.nativeElement.querySelector('[data-testid="event-title"]').textContent).toContain('786712011');
     expect(fixture.nativeElement.textContent).toContain('EMTService');
     expect(fixture.nativeElement.querySelector('[data-testid="event-request"]').textContent).toContain('{}');
+    expect(fixture.nativeElement.querySelector('[data-testid="event-response"]').textContent).toContain('success="true"');
+    expect(fixture.nativeElement.querySelector('[data-testid="verdict"]').textContent).toContain('SUCCESS');
     fixture.nativeElement.querySelector('.hops button').click();
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('[data-testid="hop-payload"]').textContent).toContain('ALTER_TRADE');
@@ -89,6 +91,14 @@ describe('EventDetailComponent', () => {
     fixture.nativeElement.querySelector('[data-testid="hop-more"]').click();
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('[data-testid="hop-payload"]').textContent).toContain('L12');
+  });
+
+  it('still shows request and response blocks when payloads are empty', async () => {
+    const empty = { ...event, requestPayload: null, responsePayload: null, outcome: null };
+    await setup(event.id, of(empty), of({ eventId: event.id, hops: [hop], requestPayload: null, responsePayload: null, outcome: null }));
+    expect(fixture.nativeElement.querySelector('[data-testid="event-request"]').textContent).toContain('—');
+    expect(fixture.nativeElement.querySelector('[data-testid="event-response"]').textContent).toContain('—');
+    expect(fixture.nativeElement.querySelector('[data-testid="verdict"]').textContent).toContain('—');
   });
 
   it('shows missing id and load errors', async () => {

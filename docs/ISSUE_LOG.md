@@ -64,6 +64,12 @@ Engineering notes for this project. Append a row when something goes wrong.
 - **What went wrong:** `trade_analysis_v2.py` in `backend/scripts` was ignored unless an env var was set.
 - **Fix:** Resolve on each parse: env path, then `backend/scripts/trade_analysis_v2.py`, then the demo script.
 
+## Agency/SLT sheet omitted request and response JSON
+
+- **What went wrong:** The parser writes Request Payload / Response Payload / Outcome, but the sheet UI only rendered Outcome. Event detail hid Request/Response when both were empty.
+- **Fix:** Show those three fields on the Agency and SLT tables, and always show Request/Response blocks on event detail.
+- **Avoid:** Do not treat event-detail-only JSON as meeting the workbook-column requirement.
+
 ## Windows log paths crush the Agency/SLT sheet
 
 - **What went wrong:** `fileLabel` split only on `/`. Windows `C:\...\ldtl-trading-....log.gz` stayed one long cell, so Trade ID and other headers were squeezed off screen.

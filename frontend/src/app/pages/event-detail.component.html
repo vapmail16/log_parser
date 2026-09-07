@@ -9,14 +9,14 @@
     <div><dt>Requests</dt><dd>{{ event.requestCount }} / {{ event.responseCount }}</dd></div>
   </dl>
 
-  <section class="bodies" *ngIf="requestText() || responseText()">
-    <article *ngIf="requestText()">
+  <section class="bodies">
+    <article>
       <h2>Request</h2>
-      <pre data-testid="event-request">{{ requestText() }}</pre>
+      <pre data-testid="event-request">{{ requestText() || '—' }}</pre>
     </article>
-    <article *ngIf="responseText()">
+    <article>
       <h2>Response</h2>
-      <pre data-testid="event-response">{{ responseText() }}</pre>
+      <pre data-testid="event-response">{{ responseText() || '—' }}</pre>
     </article>
   </section>
 
