@@ -16,3 +16,6 @@ frontend/test-results/
 .tmp_refs/
 backend/scripts/trade_analysis_v2.py
 reference_files/
+payment/**/payment_timings.csv
+payment/**/payment_timings.xlsx
+payment/.pytest_cache/

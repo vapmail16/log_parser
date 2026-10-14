@@ -54,6 +54,17 @@ def extract_exchange(blob, kind="SLT"):
         at = blob.find("Create trade request message received from LCX topic")
         if at >= 0:
             request = _brace_json(blob, at)
+        if request is None:
+            at = blob.find("EMT Request Message:")
+            if at >= 0:
+                envelope = _brace_json(blob, at)
+                if envelope:
+                    try:
+                        data = json.loads(envelope)
+                        inner = data.get("payload")
+                        request = _unescape_payload(inner) if isinstance(inner, str) and inner.strip() else envelope
+                    except json.JSONDecodeError:
+                        request = envelope
     else:
         at = blob.find("EMT Request Message:")
         if at >= 0:

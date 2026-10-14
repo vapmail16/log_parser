@@ -2,6 +2,18 @@
 
 Engineering notes for this project. Append a row when something goes wrong.
 
+## Exchange hook on one log line stays empty
+
+- **What went wrong:** `extract_exchange(line)` ran on the PROCESSING / header line. The LCX / EMT / Sending message JSON is on other lines or wraps, so request/response/outcome stayed None.
+- **Fix:** In the parser, collect lines per trade in that file, then call `extract_exchange` on the joined text. Do this in `trade_analysis_v2.py`, not in the UI.
+- **Avoid:** Do not assume the JSON sits on the same line as the workflow header. Do not have the API open logs to fill those columns.
+
+## Sheet blanks are parser output, not a UI log-read
+
+- **What went wrong:** Empty Request/Response/Outcome looked like a UI bug. Tempting to fill them from logs in the API.
+- **Fix:** The sheet only shows what `trade_analysis_v2.py` wrote. Put the extract hook in the script the API actually runs (`backend/scripts/trade_analysis_v2.py`), then Run parser again.
+- **Avoid:** Do not have the UI or API open logs to invent those three columns.
+
 ## Parser must run on the log folder
 
 - **What went wrong:** Analyze treated an existing xlsx as the input.
@@ -81,3 +93,9 @@ Engineering notes for this project. Append a row when something goes wrong.
 - **What went wrong:** The extract_exchange call needs `workflow` and `trade_id`. Those are set after `WORKFLOW_PATTERN`, not at the `REQUEST MESSAGE` / `RESPONSE MESSAGE` `continue` block.
 - **Fix:** Paste `extract_exchange_hook.py` after `workflow = workflow_match.group(1)` and the timestamp parse, still inside `for line in log_file:`.
 - **Avoid:** Do not paste the hook before the workflow match; those earlier branches `continue` and never reach it.
+
+## Install artifacts left the repo far larger than source
+
+- **What went wrong:** After local runs, `frontend/node_modules` (404M), `frontend/.angular` (906M), `backend/.venv` (42M), and `.tmp_refs` (409M) stayed on disk. The project looked like 1.9G instead of source + reference files.
+- **Fix:** Deleted those regenerable dirs. Reinstall with `npm install` in `frontend` and recreate the backend venv when needed.
+- **Avoid:** Do not commit or archive `node_modules`, `.angular`, `.venv`, or `.tmp_refs`. They are already gitignored.

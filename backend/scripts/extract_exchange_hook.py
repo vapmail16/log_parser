@@ -1,30 +1,27 @@
-"""Paste this into parse_logs, not at the top of the file.
+"""Replace the one-line hook in parse_logs with this.
 
-In trade_analysis_v2.py, find this line (your photo, around line 249):
+1. Just after payload_lines = [] (inside with open_log_file):
 
-    workflow = workflow_match.group(1)
+        trade_lines = defaultdict(list)
 
-Then scroll a few lines down to the timestamp try/except. Paste the block
-below AFTER that try/except, still inside `for line in log_file:`.
+2. Replace the current ids / extract_exchange(line) block with:
 
-Do not paste it next to REQUEST_MESSAGE / RESPONSE_MESSAGE (lines 235-242).
-Those lines `continue` before workflow exists.
-
-The first two lines get trade_id from [tradeId][WORKFLOW] so this also
-runs on EMT Request Message and Sending message lines.
-"""
-
-# --- copy from here (keep this indent) ---
         ids = re.search(r"\]\[([^\]]+)\]\[" + re.escape(workflow) + r"\]", line)
         if ids:
-            trade_id = ids.group(1)
-            kind = "Agency" if workflow == "AGY_TRADE" else "SLT"
-            req, resp, out = extract_exchange(line, kind=kind)
-            if req and requests[workflow][trade_id]["payload"] is None:
-                requests[workflow][trade_id]["payload"] = req
-            if resp:
-                if responses[workflow][trade_id]["payload"] is None:
-                    responses[workflow][trade_id]["payload"] = resp
-                if out and responses[workflow][trade_id]["outcome"] is None:
-                    responses[workflow][trade_id]["outcome"] = out
-# --- copy until here ---
+            trade_lines[workflow][ids.group(1)].append(line)
+
+3. At the end of that file, BEFORE statistics["files_processed"] += 1,
+   after the leftover payload_text block:
+
+        for wf, trades in trade_lines.items():
+            kind = "Agency" if wf == "AGY_TRADE" else "SLT"
+            for trade_id, lines in trades.items():
+                req, resp, out = extract_exchange("\n".join(lines), kind=kind)
+                if req and requests[wf][trade_id]["payload"] is None:
+                    requests[wf][trade_id]["payload"] = req
+                if resp:
+                    if responses[wf][trade_id]["payload"] is None:
+                        responses[wf][trade_id]["payload"] = resp
+                    if out and responses[wf][trade_id]["outcome"] is None:
+                        responses[wf][trade_id]["outcome"] = out
+"""

@@ -1,0 +1,7 @@
+[2026-10-14 09:01:02,100 pay-1][WSL8715367767048][PAYMENT] INFO PaymentClient - sending payment {"paymentTransactionReference":"WSL8715367767048","amount":"10.00"}
+[2026-10-14 09:01:04,250 pay-1][WSL8715367767048][PAYMENT] INFO PaymentClient - response received {"paymentTransactionReference":"WSL8715367767048","success":"true"}
+[2026-10-14 09:10:00,000 pay-2][WSL111][PAYMENT] INFO PaymentClient - sending payment {"paymentTransactionReference":"WSL111"}
+[2026-10-14 11:00:00,000 pay-3][WSL222][PAYMENT] INFO PaymentClient - sending payment
+{"paymentTransactionReference":"WSL222","status":"NEW"}
+[2026-10-14 11:00:05,500 pay-3][WSL222][PAYMENT] INFO PaymentClient - payment response
+{"paymentTransactionReference":"WSL222","success":"true"}
